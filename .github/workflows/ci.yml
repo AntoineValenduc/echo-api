@@ -1,0 +1,28 @@
+name: ci
+on:
+    pull_request:
+        branches:
+            - "dev"
+
+jobs:
+    build-test-symfony:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Install checkout
+              uses: actions/checkout@v7
+
+            - name: build docker services
+              run: docker compose -f docker-compose.yml build
+
+            - name: docker up && install dependencies
+              run: |
+                  docker compose run --rm php_composer  composer install \
+                  --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+
+#            - name: run tests
+#              run: docker compose run --rm php_composer vendor/bin/phpunit
+
+            - name: stop and clean container
+              if: always()
+              run: docker compose down
