@@ -5,7 +5,7 @@ on:
             - "dev"
     push:
         branches:
-            - "*"
+            - "**"
 
 jobs:
     build-test-symfony:
