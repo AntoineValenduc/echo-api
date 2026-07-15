@@ -15,6 +15,9 @@ services:
         working_dir: /www/symfony
         volumes:
             - './symfony/:/www/symfony'
+        env_file:
+            - .env
+        
 
     postgres_sy:
         container_name: postgres_sy
@@ -24,6 +27,10 @@ services:
             - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
             - POSTGRES_DB=${POSTGRES_DB}
         volumes:
-            - 'pgsql:/var/lib/postgresql/18/docker'
+            - 'pgsql:/var/lib/postgresql'
+        ports:
+          - '5432:5432'
+          
 volumes:
     pgsql:
+        driver: local

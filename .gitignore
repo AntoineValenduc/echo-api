@@ -1,3 +1,5 @@
 .env
+.env.dev
+.env.local
 .idea
 docker-compose.override.yml

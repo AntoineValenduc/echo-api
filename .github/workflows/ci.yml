@@ -3,6 +3,9 @@ on:
     pull_request:
         branches:
             - "dev"
+    push:
+        branches:
+            - "**"
 
 jobs:
     build-test-symfony:
@@ -11,6 +14,14 @@ jobs:
         steps:
             - name: Install checkout
               uses: actions/checkout@v7
+
+            - name: Create .env file for CI
+              run: |
+                echo "POSTGRES_USER=echo_user" >> .env
+                echo "POSTGRES_PASSWORD=echo_password" >> .env
+                echo "POSTGRES_DB=echo_db" >> .env
+                echo "DEFAULT_URI=http://localhost" >> .env
+                echo "DATABASE_URL=postgresql://echo_user:echo_password@postgres_sy:5432/echo_db?serverVersion=18&charset=utf8" >> .env
 
             - name: build docker services
               run: docker compose -f docker-compose.yml build
