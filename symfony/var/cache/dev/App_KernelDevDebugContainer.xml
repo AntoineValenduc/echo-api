@@ -90,7 +90,7 @@
       <parameter>test</parameter>
     </parameter>
     <parameter key="kernel.logs_dir">/www/symfony/var/log</parameter>
-    <parameter key="kernel.share_dir">/www/symfony/var/cache/dev</parameter>
+    <parameter key="kernel.share_dir">/www/symfony/var/share/dev</parameter>
     <parameter key="kernel.charset">UTF-8</parameter>
     <parameter key="validator.translation_domain">validators</parameter>
     <parameter key="fragment.renderer.hinclude.global_template">null</parameter>
@@ -535,7 +535,7 @@
       </argument>
     </service>
     <service id="http_cache.store" class="Symfony\Component\HttpKernel\HttpCache\Store">
-      <argument>/www/symfony/var/cache/dev/http_cache</argument>
+      <argument>/www/symfony/var/share/dev/http_cache</argument>
     </service>
     <service id="url_helper" class="Symfony\Component\HttpFoundation\UrlHelper">
       <argument type="service" id="request_stack"/>
@@ -1042,7 +1042,7 @@
       <tag name="monolog.logger" channel="cache"/>
       <argument/>
       <argument>0</argument>
-      <argument>/www/symfony/var/cache/dev/pools/app</argument>
+      <argument>/www/symfony/var/share/dev/pools/app</argument>
       <argument type="service" id="cache.default_marshaller" on-invalid="ignore"/>
       <call method="setLogger">
         <argument type="service" id="logger" on-invalid="ignore"/>
@@ -4664,7 +4664,7 @@
     <service id="cache.app.recorder_inner" class="Symfony\Component\Cache\Adapter\FilesystemAdapter">
       <argument>smYCx0BqUK</argument>
       <argument>0</argument>
-      <argument>/www/symfony/var/cache/dev/pools/app</argument>
+      <argument>/www/symfony/var/share/dev/pools/app</argument>
       <argument type="service" id="cache.default_marshaller" on-invalid="ignore"/>
       <call method="setLogger">
         <argument type="service" id="logger" on-invalid="ignore"/>

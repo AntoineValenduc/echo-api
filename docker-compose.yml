@@ -15,6 +15,7 @@ services:
         working_dir: /www/symfony
         volumes:
             - './symfony/:/www/symfony'
+            - './.env:/www/symfony/.env'
         env_file:
             - .env
         
