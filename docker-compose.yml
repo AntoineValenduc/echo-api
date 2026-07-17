@@ -15,11 +15,9 @@ services:
         working_dir: /www/symfony
         volumes:
             - './symfony/:/www/symfony'
-            - './.env:/www/symfony/.env'
         env_file:
             - .env
         
-
     postgres_sy:
         container_name: postgres_sy
         image: postgres:18.4-alpine3.24
