@@ -90,7 +90,7 @@
       <parameter>test</parameter>
     </parameter>
     <parameter key="kernel.logs_dir">/www/symfony/var/log</parameter>
-    <parameter key="kernel.share_dir">/www/symfony/var/cache/dev</parameter>
+    <parameter key="kernel.share_dir">/www/symfony/var/share/dev</parameter>
     <parameter key="kernel.charset">UTF-8</parameter>
     <parameter key="validator.translation_domain">validators</parameter>
     <parameter key="fragment.renderer.hinclude.global_template">null</parameter>
@@ -234,6 +234,31 @@
     <service id="kernel" class="App\Kernel" public="true" synthetic="true" autoconfigure="true">
       <tag name="controller.service_arguments"/>
       <tag name="routing.route_loader"/>
+    </service>
+    <service id="App\Controller\ReaderController" class="App\Controller\ReaderController" public="true" autowire="true" autoconfigure="true">
+      <tag name="controller.service_arguments"/>
+      <tag name="routing.controller"/>
+      <tag name="container.service_subscriber"/>
+      <argument type="service" id="App\Service\ReaderService"/>
+      <call method="setContainer">
+        <argument type="service" id=".service_locator.TJNRSaV.App\Controller\ReaderController"/>
+      </call>
+    </service>
+    <service id="App\DTO\ReaderOutputDTO" class="App\DTO\ReaderOutputDTO" autowire="true" autoconfigure="true">
+      <tag name="container.error" message="Cannot autowire service &quot;App\DTO\ReaderOutputDTO&quot;: argument &quot;$id&quot; of method &quot;__construct()&quot; is type-hinted &quot;int&quot;, you should configure its value explicitly."/>
+    </service>
+    <service id="App\Entity\Reader" class="App\Entity\Reader" autowire="true" autoconfigure="true">
+      <tag name="container.excluded" source="because it's a Doctrine entity"/>
+      <tag name="container.excluded" source="with #[Doctrine\ORM\Mapping\Entity] attribute"/>
+    </service>
+    <service id="App\Mapper\ReaderMapper" class="App\Mapper\ReaderMapper" autowire="true" autoconfigure="true"/>
+    <service id="App\Repository\ReaderRepository" class="App\Repository\ReaderRepository" autowire="true" autoconfigure="true">
+      <tag name="doctrine.repository_service"/>
+      <argument type="service" id="doctrine"/>
+    </service>
+    <service id="App\Service\ReaderService" class="App\Service\ReaderService" autowire="true" autoconfigure="true">
+      <argument type="service" id="App\Repository\ReaderRepository"/>
+      <argument type="service" id="App\Mapper\ReaderMapper"/>
     </service>
     <service id="parameter_bag" class="Symfony\Component\DependencyInjection\ParameterBag\ContainerBag">
       <argument type="service" id="service_container"/>
@@ -535,7 +560,7 @@
       </argument>
     </service>
     <service id="http_cache.store" class="Symfony\Component\HttpKernel\HttpCache\Store">
-      <argument>/www/symfony/var/cache/dev/http_cache</argument>
+      <argument>/www/symfony/var/share/dev/http_cache</argument>
     </service>
     <service id="url_helper" class="Symfony\Component\HttpFoundation\UrlHelper">
       <argument type="service" id="request_stack"/>
@@ -1042,7 +1067,7 @@
       <tag name="monolog.logger" channel="cache"/>
       <argument/>
       <argument>0</argument>
-      <argument>/www/symfony/var/cache/dev/pools/app</argument>
+      <argument>/www/symfony/var/share/dev/pools/app</argument>
       <argument type="service" id="cache.default_marshaller" on-invalid="ignore"/>
       <call method="setLogger">
         <argument type="service" id="logger" on-invalid="ignore"/>
@@ -1648,7 +1673,9 @@
     </service>
     <service id="routing.loader.attribute.services" class="Symfony\Component\Routing\Loader\AttributeServicesLoader">
       <tag name="routing.loader" priority="-10"/>
-      <argument type="collection"/>
+      <argument type="collection">
+        <argument>App\Controller\ReaderController</argument>
+      </argument>
     </service>
     <service id="routing.loader.attribute.directory" class="Symfony\Component\Routing\Loader\AttributeDirectoryLoader">
       <tag name="routing.loader" priority="-10"/>
@@ -2415,7 +2442,7 @@
     <service id="doctrine.orm.configuration" class="Doctrine\ORM\Configuration" abstract="true"/>
     <service id="doctrine.orm.entity_manager.abstract" class="Doctrine\ORM\EntityManager" lazy="true" abstract="true"/>
     <service id="doctrine.orm.container_repository_factory" class="Doctrine\Bundle\DoctrineBundle\Repository\ContainerRepositoryFactory">
-      <argument type="service" id=".service_locator.dpiLQ5O"/>
+      <argument type="service" id=".service_locator.HNyyTYk"/>
     </service>
     <service id="doctrine.orm.manager_configurator.abstract" class="Doctrine\Bundle\DoctrineBundle\ManagerConfigurator" abstract="true">
       <argument type="collection"/>
@@ -3203,6 +3230,14 @@
       <argument>null</argument>
       <argument>false</argument>
     </service>
+    <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\Controller\ReaderController" class="App\Controller\ReaderController" autowire="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\Controller\ReaderController" class="App\Controller\ReaderController" autowire="true" abstract="true"/>
+    <service id=".instanceof.App\Controller\ReaderController.0.App\Controller\ReaderController" class="App\Controller\ReaderController" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Controller\ReaderController" class="App\Controller\ReaderController" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.App\Entity\Reader.0.App\Entity\Reader" class="App\Entity\Reader" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Entity\Reader" class="App\Entity\Reader" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface.0.App\Repository\ReaderRepository" class="App\Repository\ReaderRepository" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Repository\ReaderRepository" class="App\Repository\ReaderRepository" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".service_locator.ryAvHi4" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
@@ -3758,6 +3793,12 @@
         <argument key="doctrine.orm.default_listeners.attach_entity_listeners" type="service_closure" id="doctrine.orm.default_listeners.attach_entity_listeners"/>
       </argument>
     </service>
+    <service id=".service_locator.HNyyTYk" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="App\Repository\ReaderRepository" type="service_closure" id="App\Repository\ReaderRepository"/>
+      </argument>
+    </service>
     <service id=".service_locator.W55Po6X" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
@@ -3807,6 +3848,12 @@
         <argument key="twig" type="service_closure" id="twig" on-invalid="ignore"/>
         <argument key="parameter_bag" type="service_closure" id="parameter_bag" on-invalid="ignore"/>
       </argument>
+    </service>
+    <service id=".service_locator.TJNRSaV.App\Controller\ReaderController" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator_context" id="App\Controller\ReaderController"/>
+      <argument>App\Controller\ReaderController</argument>
+      <argument type="service" id="service_container"/>
+      <factory service=".service_locator.TJNRSaV" method="withContext"/>
     </service>
     <service id=".service_locator.TJNRSaV.controller.helper" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator_context" id="controller.helper"/>
@@ -3934,6 +3981,7 @@
       <call method="allowControllers">
         <argument type="collection">
           <argument>App\Kernel</argument>
+          <argument>App\Controller\ReaderController</argument>
           <argument>Doctrine\Bundle\DoctrineBundle\Controller\ProfilerController</argument>
         </argument>
       </call>
@@ -4664,7 +4712,7 @@
     <service id="cache.app.recorder_inner" class="Symfony\Component\Cache\Adapter\FilesystemAdapter">
       <argument>smYCx0BqUK</argument>
       <argument>0</argument>
-      <argument>/www/symfony/var/cache/dev/pools/app</argument>
+      <argument>/www/symfony/var/share/dev/pools/app</argument>
       <argument type="service" id="cache.default_marshaller" on-invalid="ignore"/>
       <call method="setLogger">
         <argument type="service" id="logger" on-invalid="ignore"/>
