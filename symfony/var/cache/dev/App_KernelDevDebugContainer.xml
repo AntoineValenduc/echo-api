@@ -239,17 +239,26 @@
       <tag name="controller.service_arguments"/>
       <tag name="routing.controller"/>
       <tag name="container.service_subscriber"/>
+      <argument type="service" id="App\Service\ReaderService"/>
       <call method="setContainer">
         <argument type="service" id=".service_locator.TJNRSaV.App\Controller\ReaderController"/>
       </call>
+    </service>
+    <service id="App\DTO\ReaderOutputDTO" class="App\DTO\ReaderOutputDTO" autowire="true" autoconfigure="true">
+      <tag name="container.error" message="Cannot autowire service &quot;App\DTO\ReaderOutputDTO&quot;: argument &quot;$id&quot; of method &quot;__construct()&quot; is type-hinted &quot;int&quot;, you should configure its value explicitly."/>
     </service>
     <service id="App\Entity\Reader" class="App\Entity\Reader" autowire="true" autoconfigure="true">
       <tag name="container.excluded" source="because it's a Doctrine entity"/>
       <tag name="container.excluded" source="with #[Doctrine\ORM\Mapping\Entity] attribute"/>
     </service>
+    <service id="App\Mapper\ReaderMapper" class="App\Mapper\ReaderMapper" autowire="true" autoconfigure="true"/>
     <service id="App\Repository\ReaderRepository" class="App\Repository\ReaderRepository" autowire="true" autoconfigure="true">
       <tag name="doctrine.repository_service"/>
       <argument type="service" id="doctrine"/>
+    </service>
+    <service id="App\Service\ReaderService" class="App\Service\ReaderService" autowire="true" autoconfigure="true">
+      <argument type="service" id="App\Repository\ReaderRepository"/>
+      <argument type="service" id="App\Mapper\ReaderMapper"/>
     </service>
     <service id="parameter_bag" class="Symfony\Component\DependencyInjection\ParameterBag\ContainerBag">
       <argument type="service" id="service_container"/>
