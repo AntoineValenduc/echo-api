@@ -2,12 +2,19 @@
 
 namespace App\Controller;
 
+use App\Service\ReaderService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 final class ReaderController extends AbstractController
 {
+
+    public function __construct(
+            private readonly ReaderService $readerService
+    ) {}
+
     #[Route('/reader', name: 'app_reader')]
     public function index(): Response
     {
@@ -17,20 +24,19 @@ final class ReaderController extends AbstractController
     }
 
     /**
-     * @return Reader Return a single reader with his ID
+     * Return a single reader output DTO by its ID
      */
-    public function getReader(int $id): Reader
+    #[Route('/reader/{id}', name: 'app_reader_get', methods: ['GET'])]
+    public function getReader(int $id): JsonResponse
     {
-        $reader = $this->getDoctrine()
-            ->getRepository(Reader::class)
-            ->findOneById($id);
+        try {
+            $reader = $this->readerService->getById($id);
 
-        if (!$reader) {
-            throw $this->createNotFoundException(
-                'No reader found for id '.$id
-            );
+            // Symfony va sérialiser automatiquement le DTO en JSON
+            return $this->json($reader);
+
+        } catch (\InvalidArgumentException $e) {
+            throw $this->createNotFoundException($e->getMessage());
         }
-
-        return $reader;
     }
 }

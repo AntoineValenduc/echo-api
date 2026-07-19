@@ -19,5 +19,7 @@ return [
     '_profiler_exception' => [['token'], ['_controller' => 'web_profiler.controller.exception_panel::body'], [], [['text', '/exception'], ['variable', '/', '[^/]++', 'token', true], ['text', '/_profiler']], [], [], []],
     '_profiler_exception_css' => [['token'], ['_controller' => 'web_profiler.controller.exception_panel::stylesheet'], [], [['text', '/exception.css'], ['variable', '/', '[^/]++', 'token', true], ['text', '/_profiler']], [], [], []],
     'app_reader' => [[], ['_controller' => 'App\\Controller\\ReaderController::index'], [], [['text', '/reader']], [], [], []],
+    'app_reader_get' => [['id'], ['_controller' => 'App\\Controller\\ReaderController::getReader'], [], [['variable', '/', '[^/]++', 'id', true], ['text', '/reader']], [], [], []],
     'App\Controller\ReaderController::index' => [[], ['_controller' => 'App\\Controller\\ReaderController::index'], [], [['text', '/reader']], [], [], []],
+    'App\Controller\ReaderController::getReader' => [['id'], ['_controller' => 'App\\Controller\\ReaderController::getReader'], [], [['variable', '/', '[^/]++', 'id', true], ['text', '/reader']], [], [], []],
 ];
