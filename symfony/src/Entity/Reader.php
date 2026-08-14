@@ -5,29 +5,48 @@ namespace App\Entity;
 use App\Repository\ReaderRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ReaderRepository::class)]
-class Reader
+#[UniqueEntity(fields: ['email'], message: 'Cet email est déjà utilisé.')]
+#[UniqueEntity(fields: ['username'], message: 'Ce pseudo est déjà utilisé.')]
+class Reader implements UserInterface, PasswordAuthenticatedUserInterface
 {
+    public const ROLE_USER = 'ROLE_USER';
+    public const ROLE_ADMIN = 'ROLE_ADMIN';
+
     #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
+    #[ORM\Column(type: 'uuid', unique: true)]
+    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
+    #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
+    private ?Uuid $id = null;
 
-    #[ORM\Column(length: 50)]
+    #[ORM\Column(length: 180, unique: true)]
+    #[Assert\NotBlank]
+    #[Assert\Email]
+    private ?string $email = null;
+
+    #[ORM\Column(length: 50, unique: true)]
+    #[Assert\NotBlank]
+    #[Assert\Length(min: 3, max: 50)]
     private ?string $username = null;
-
-    #[ORM\Column(length: 180)]
-    private ?string $mail = null;
 
     #[ORM\Column(length: 255)]
     private ?string $password = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTime $date_inscription = null;
+    #[ORM\Column(type: Types::JSON)]
+    private array $roles = [self::ROLE_USER];
 
-    #[ORM\Column]
-    private ?int $connection_serie = null;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $date_inscription = null;
+
+    #[ORM\Column(options: ['default' => 0])]
+    private int $connection_serie = 0;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTime $date_last_connection = null;
@@ -44,9 +63,26 @@ class Reader
     #[ORM\Column]
     private ?bool $consentement_analytics = null;
 
-    public function getId(): ?int
+    public function __construct()
+    {
+        $this->date_inscription = new \DateTime();
+    }
+
+    public function getId(): ?Uuid
     {
         return $this->id;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(string $email): static
+    {
+        $this->email = $email;
+
+        return $this;
     }
 
     public function getUsername(): ?string
@@ -57,18 +93,6 @@ class Reader
     public function setUsername(string $username): static
     {
         $this->username = $username;
-
-        return $this;
-    }
-
-    public function getMail(): ?string
-    {
-        return $this->mail;
-    }
-
-    public function setMail(string $mail): static
-    {
-        $this->mail = $mail;
 
         return $this;
     }
@@ -85,19 +109,54 @@ class Reader
         return $this;
     }
 
-    public function getDateInscription(): ?\DateTime
+    /**
+     * @return list<string>
+     */
+    public function getRoles(): array
     {
-        return $this->date_inscription;
+        $roles = $this->roles;
+        $roles[] = self::ROLE_USER;
+
+        return array_values(array_unique($roles));
     }
 
-    public function setDateInscription(\DateTime $date_inscription): static
+    public function setRoles(array $roles): static
     {
-        $this->date_inscription = $date_inscription;
+        $this->roles = $roles;
 
         return $this;
     }
 
-    public function getConnectionSerie(): ?int
+    public function addRole(string $role): static
+    {
+        if (!in_array($role, $this->roles, true)) {
+            $this->roles[] = $role;
+        }
+
+        return $this;
+    }
+
+    public function removeRole(string $role): static
+    {
+        $this->roles = array_values(array_filter(
+            $this->roles,
+            fn (string $r) => $r !== $role
+        ));
+
+        return $this;
+    }
+
+    public function isAdmin(): bool
+    {
+        return in_array(self::ROLE_ADMIN, $this->roles, true);
+    }
+
+    public function getDateInscription(): ?\DateTimeInterface
+    {
+        return $this->date_inscription;
+    }
+
+    public function getConnectionSerie(): int
     {
         return $this->connection_serie;
     }
@@ -167,5 +226,14 @@ class Reader
         $this->consentement_analytics = $consentement_analytics;
 
         return $this;
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return (string) $this->username;
+    }
+
+    public function eraseCredentials(): void
+    {
     }
 }
