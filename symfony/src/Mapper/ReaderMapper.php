@@ -15,7 +15,7 @@ class ReaderMapper
         return new ReaderOutputDTO(
             id: $reader->getId(),
             username: $reader->getUsername(),
-            mail: $reader->getMail(),
+            email: $reader->getEmail(),
             date_inscription: $reader->getDateInscription(),
             connection_serie: $reader->getConnectionSerie(),
             date_last_connection: $reader->getDateLastConnection(),

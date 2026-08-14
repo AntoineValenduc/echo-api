@@ -3,13 +3,14 @@
 namespace App\DTO;
 
 use DateTime;
+use Symfony\Component\Uid\Uuid;
 
 final class ReaderOutputDTO
 {
     public function __construct(
-        public readonly int $id,
+        public readonly Uuid $id,
         public readonly string $username,
-        public readonly string $mail,
+        public readonly string $email,
         public readonly DateTime $date_inscription,
         public readonly int $connection_serie,
         public readonly DateTime $date_last_connection,
