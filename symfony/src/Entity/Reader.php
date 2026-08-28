@@ -24,6 +24,7 @@ class Reader implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'uuid', unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
+    /** @phpstan-ignore property.unusedType */
     private ?Uuid $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
@@ -39,6 +40,7 @@ class Reader implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     private ?string $password = null;
 
+    /** @var list<string> */
     #[ORM\Column(type: Types::JSON)]
     private array $roles = [self::ROLE_USER];
 
@@ -120,6 +122,9 @@ class Reader implements UserInterface, PasswordAuthenticatedUserInterface
         return array_values(array_unique($roles));
     }
 
+    /**
+     * @param list<string> $roles
+     */
     public function setRoles(array $roles): static
     {
         $this->roles = $roles;
@@ -151,9 +156,9 @@ class Reader implements UserInterface, PasswordAuthenticatedUserInterface
         return in_array(self::ROLE_ADMIN, $this->roles, true);
     }
 
-    public function getDateInscription(): ?\DateTimeInterface
+    public function getDateInscription(): \DateTimeInterface
     {
-        return $this->date_inscription;
+        return $this->date_inscription ?? new \DateTime();
     }
 
     public function getConnectionSerie(): int

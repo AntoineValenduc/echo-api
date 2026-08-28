@@ -13,7 +13,8 @@ final class ReaderController extends AbstractController
 {
     public function __construct(
         private readonly ReaderService $readerService
-    ) {}
+    ) {
+    }
 
     #[Route('/reader', name: 'app_reader')]
     public function index(): Response

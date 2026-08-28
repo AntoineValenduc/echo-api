@@ -12,7 +12,8 @@ final class ReaderService
     public function __construct(
         private readonly ReaderRepository $readerRepository,
         private readonly ReaderMapper $readerMapper
-    ) {}
+    ) {
+    }
 
     public function getById(Uuid $id): ReaderOutputDTO
     {
