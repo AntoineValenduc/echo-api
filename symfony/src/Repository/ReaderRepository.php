@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Reader;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Uid\Uuid;
 
 /**
  * @extends ServiceEntityRepository<Reader>
@@ -19,38 +20,13 @@ class ReaderRepository extends ServiceEntityRepository
     /**
      * @return Reader Return a single reader with his ID
      */
-    public function findOneById(int $id): ?Reader
+    public function findOneById(Uuid $id): ?Reader
     {
         return $this->createQueryBuilder('r')
             ->andWhere('r.id = :id')
-            ->setParameter('id', $id)
+            ->setParameter('id', $id, 'uuid')
             ->getQuery()
             ->getOneOrNullResult()
         ;
     }
-
-//    /**
-//     * @return Reader[] Returns an array of Reader objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('r')
-//            ->andWhere('r.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('r.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?Reader
-//    {
-//        return $this->createQueryBuilder('r')
-//            ->andWhere('r.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
 }

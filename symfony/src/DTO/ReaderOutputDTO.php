@@ -2,20 +2,22 @@
 
 namespace App\DTO;
 
-use DateTime;
+use DateTimeInterface;
+use Symfony\Component\Uid\Uuid;
 
 final class ReaderOutputDTO
 {
     public function __construct(
-        public readonly int $id,
+        public readonly Uuid $id,
         public readonly string $username,
-        public readonly string $mail,
-        public readonly DateTime $date_inscription,
+        public readonly string $email,
+        public readonly DateTimeInterface $date_inscription,
         public readonly int $connection_serie,
-        public readonly DateTime $date_last_connection,
-        public readonly DateTime $date_last_read,
+        public readonly DateTimeInterface $date_last_connection,
+        public readonly DateTimeInterface $date_last_read,
         public readonly bool $is_premium,
         public readonly int $total_point,
         public readonly bool $consentement_analytics,
-    ) {}
+    ) {
+    }
 }
