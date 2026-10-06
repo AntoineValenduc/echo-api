@@ -47,8 +47,20 @@ services:
         ports:
             - "5433:5432"
 
+    redis:
+        container_name: redis
+        image: redis:8-alpine
+        restart: unless-stopped
+        ports:
+            - "6379:6379"
+        volumes:
+            - redis_data:/data
+        command: redis-server --appendonly yes
+
 volumes:
     pgsql_dev:
         driver: local
     pgsql_test:
+        driver: local
+    redis_data:
         driver: local

@@ -1,0 +1,104 @@
+name: CI
+
+on:
+    pull_request:
+        branches:
+            - dev
+
+    push:
+        branches:
+            - "**"
+
+jobs:
+    build-test-symfony:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Create Docker .env
+              run: |
+                  echo "POSTGRES_USER=echo_user" >> .env
+                  echo "POSTGRES_PASSWORD=echo_password" >> .env
+                  echo "POSTGRES_DB=echo_db" >> .env
+
+            - name: Create Symfony .env.dev
+              run: |
+                  mkdir -p symfony
+                  echo "APP_ENV=test" >> symfony/.env.dev
+                  echo "APP_DEBUG=1" >> symfony/.env.dev
+                  echo "DEFAULT_URI=http://localhost" >> symfony/.env.dev
+                  echo "DATABASE_URL=postgresql://echo_user:echo_password@postgres_sy:5432/echo_db?serverVersion=18&charset=utf8" >> symfony/.env.dev
+                  echo "REDIS_URL=redis://redis:6379" >> symfony/.env.dev
+                  echo "MESSENGER_TRANSPORT_DSN=redis://redis:6379/messages" >> symfony/.env.dev
+
+            - name: Build Docker images
+              run: docker compose build
+
+            - name: Start containers
+              run: docker compose up -d
+
+            - name: Wait for PostgreSQL
+              run: |
+                  until docker compose exec -T postgres_sy pg_isready -U echo_user; do
+                    sleep 2
+                  done
+
+            - name: Wait for Redis
+              run: |
+                  until docker compose exec -T redis redis-cli ping | grep PONG; do
+                    sleep 2
+                  done
+
+            - name: Install Composer dependencies
+              run: |
+                  docker compose exec -T php_composer composer install \
+                    --no-ansi \
+                    --no-interaction \
+                    --no-scripts \
+                    --no-progress \
+                    --prefer-dist
+
+            - name: Create test database
+              run: |
+                  docker compose exec -T php_composer \
+                  php bin/console doctrine:database:create \
+                  --if-not-exists \
+                  --env=test
+
+            - name: Run migrations
+              run: |
+                  docker compose exec -T php_composer \
+                  php bin/console doctrine:migrations:migrate \
+                  --env=test \
+                  --no-interaction
+
+            - name: Clear test cache
+              run: |
+                  docker compose exec -T php_composer \
+                  php bin/console cache:clear \
+                  --env=test
+
+            - name: Run PHPUnit
+              run: |
+                  docker compose exec -T php_composer \
+                  vendor/bin/phpunit
+
+            - name: Run PHPStan
+              run: |
+                  docker compose exec -T php_composer \
+                  php -d memory_limit=512M \
+                  vendor/bin/phpstan analyse
+
+            - name: Check PSR-12
+              run: |
+                  docker compose exec -T php_composer \
+                  vendor/bin/php-cs-fixer fix src \
+                  --rules=@PSR12 \
+                  --dry-run \
+                  --diff
+
+            - name: Stop containers
+              if: always()
+              run: docker compose down -v --remove-orphans
