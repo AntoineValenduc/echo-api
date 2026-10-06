@@ -6,7 +6,7 @@ L'architecture intègre **deux bases de données PostgreSQL totalement isolées*
 
 ---
 
-## 📌 Architecture & Accès rapides
+## Architecture & Accès rapides
 
 | Service | Technologie | Port Externe | Accès local |
 | :--- | :--- | :--- | :--- |
