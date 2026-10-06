@@ -1,3 +1,5 @@
+# Bienvenue dans le projet Back-end ECHO
+
 Ce projet nommé ECHO est entièrement orchestré avec Docker. Il sépare proprement l'environnement système (géré à la racine) et le code applicatif (situé dans le dossier `/symfony`).
 
 L'architecture intègre **deux bases de données PostgreSQL totalement isolées** (dev et test) pour éviter que les tests automatisés ne polluent ou ne suppriment les données de développement.

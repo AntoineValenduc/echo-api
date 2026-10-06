@@ -13,6 +13,7 @@ services:
         container_name: php_composer
         build:
             context: ./docker/php/
+            #param par défaut
             args:
                 UID: ${UID:-1000}
                 GID: ${GID:-1000}
@@ -20,7 +21,7 @@ services:
         volumes:
             - "./symfony/:/www/symfony"
         env_file:
-            - .env
+            - ./symfony/.env.dev
 
     postgres_sy:
         container_name: postgres_sy
