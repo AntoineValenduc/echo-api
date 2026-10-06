@@ -47,6 +47,18 @@ services:
         ports:
             - "5433:5432"
 
+    postgres_keycloak:
+        container_name: pgsql_keycloak
+        image: postgres:18.4-alpine3.24
+        environment:
+            POSTGRES_USER: ${POSTGRES_KEYCLOAK_USER}
+            POSTGRES_PASSWORD: ${POSTGRES_KEYCLOAK_PASSWORD}
+            POSTGRES_DB: ${POSTGRES_KEYCLOAK_DB}
+        volumes:
+            - pgsql_keycloak:/var/lib/postgresql
+        ports:
+          - "5434:5432"
+
     redis:
         container_name: redis
         image: redis:8-alpine
@@ -57,10 +69,29 @@ services:
             - redis_data:/data
         command: redis-server --appendonly yes
 
+    keycloak:
+        image: quay.io/keycloak/keycloak:24.0
+        container_name: keycloak_service
+        command: start-dev --import-realm
+        environment:
+            KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
+            KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+            KC_DB: postgres
+            KC_DB_URL: jdbc:postgresql://pgsql_keycloak:5432/${POSTGRES_KEYCLOAK_DB}
+            KC_DB_USERNAME: ${POSTGRES_KEYCLOAK_USER}
+            KC_DB_PASSWORD: ${POSTGRES_KEYCLOAK_PASSWORD}
+            KC_HEALTH_ENABLED: "true"
+        ports:
+        - "${KEYCLOAK_PORT}:8080"
+        depends_on:
+        - postgres_keycloak
+
 volumes:
     pgsql_dev:
         driver: local
     pgsql_test:
+        driver: local
+    pgsql_keycloak:
         driver: local
     redis_data:
         driver: local

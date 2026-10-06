@@ -22,7 +22,18 @@ jobs:
                 echo "POSTGRES_DB=echo_db" >> .env
                 echo "DEFAULT_URI=http://localhost" >> .env
                 echo "DATABASE_URL=postgresql://echo_user:echo_password@postgres_sy:5432/echo_db?serverVersion=18&charset=utf8" >> .env
-                echo "REDIS_URL=redis://redis_sy:6379" >> .env
+                
+                echo "KEYCLOAK_ADMIN=admin" >> .env
+                echo "KEYCLOAK_ADMIN_PASSWORD=admin_secret_password" >> .env
+                echo "POSTGRES_KEYCLOAK_USER=keycloak_user" >> .env
+                echo "POSTGRES_KEYCLOAK_PASSWORD=keycloak_password" >> .env
+                echo "POSTGRES_KEYCLOAK_DB=keycloak_db" >> .env
+                echo "KEYCLOAK_PORT=8081" >> .env
+
+                echo "KEYCLOAK_URL=http://keycloak_service:8080" >> .env
+                echo "KEYCLOAK_REALM=myrealm" >> .env
+                echo "KEYCLOAK_CLIENT_ID=symfony_client" >> .env
+                echo "KEYCLOAK_CLIENT_SECRET=secret_test_ci" >> .env
 
             - name: Build Docker Services
               run: docker compose build
@@ -30,14 +41,22 @@ jobs:
             - name: Start Docker Services
               run: docker compose up -d
 
+            - name: Wait for Keycloak health
+              run: |
+                echo "Waiting for Keycloak to start..."
+                until [ "$(docker inspect --format='{{json .State.Health.Status}}' keycloak_service 2>/dev/null)" = '"healthy"' ] || curl -s http://localhost:8081/health/ready > /dev/null; do
+                  sleep 3
+                done
+                echo "Keycloak is ready !"
+
             - name: Install dependencies
               run: |
-                  docker compose run --rm php_composer  composer install \
+                  docker compose exec -T php_composer composer install \
                   --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
-
+                  
             - name: Run tests
-              run: docker compose run --rm php_composer vendor/bin/phpunit
+              run: docker compose exec -T php_composer vendor/bin/phpunit
 
-            - name: stop and clean container
+            - name: Stop and clean containers
               if: always()
-              run: docker compose down
+              run: docker compose down -v
