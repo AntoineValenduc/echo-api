@@ -17,12 +17,12 @@ jobs:
 
             - name: Create .env file for CI
               run: |
-                echo "POSTGRES_USER=echo_user" >> .symfony/.env
-                echo "POSTGRES_PASSWORD=echo_password" >> .symfony/.env
-                echo "POSTGRES_DB=echo_db" >> .symfony/.env
-                echo "DEFAULT_URI=http://localhost" >> .symfony/.env
-                echo "DATABASE_URL=postgresql://echo_user:echo_password@postgres_sy:5432/echo_db?serverVersion=18&charset=utf8" >> .symfony/.env
-                echo "REDIS_URL=redis://redis_sy:6379" >> .symfony/.env
+                echo "POSTGRES_USER=echo_user" >> .symfony/.env.dev
+                echo "POSTGRES_PASSWORD=echo_password" >> .symfony/.env.dev
+                echo "POSTGRES_DB=echo_db" >> .symfony/.env.dev
+                echo "DEFAULT_URI=http://localhost" >> .symfony/.env.dev
+                echo "DATABASE_URL=postgresql://echo_user:echo_password@postgres_sy:5432/echo_db?serverVersion=18&charset=utf8" >> .symfony/.env.dev
+                echo "REDIS_URL=redis://redis_sy:6379" >> .symfony/.env.dev
 
             - name: Build Docker Services
               run: docker compose build
