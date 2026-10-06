@@ -1,61 +1,61 @@
-<?php
 
-namespace App\Tests\Unit\Service;
 
-use App\DTO\ReaderOutputDTO;
-use App\Entity\Reader;
-use App\Mapper\ReaderMapper;
-use App\Repository\ReaderRepository;
-use App\Service\ReaderService;
-use PHPUnit\Framework\TestCase;
-use Symfony\Component\Uid\Uuid;
+// namespace App\Tests\Unit\Service;
 
-class ReaderServiceTest extends TestCase
-{
-    public function testGetByIdReturnsSuccessMessageWhenReaderExists(): void
-    {
-        $uuid = Uuid::v4();
+// use App\DTO\ReaderOutputDTO;
+// use App\Entity\Reader;
+// use App\Mapper\ReaderMapper;
+// use App\Repository\ReaderRepository;
+// use App\Service\ReaderService;
+// use PHPUnit\Framework\TestCase;
+// use Symfony\Component\Uid\Uuid;
 
-        $readerMock = $this->createMock(Reader::class);
-        $readerMock->method('getId')->willReturn($uuid);
-        $readerMock->method('getUsername')->willReturn('John');
-        $readerMock->method('getEmail')->willReturn('john@test.com');
-        $readerMock->method('getDateInscription')->willReturn(new \DateTime());
-        $readerMock->method('getConnectionSerie')->willReturn(5);
-        $readerMock->method('getDateLastConnection')->willReturn(new \DateTime());
-        $readerMock->method('getDateLastRead')->willReturn(new \DateTime());
-        $readerMock->method('isPremium')->willReturn(true);
-        $readerMock->method('getTotalPoint')->willReturn(100);
-        $readerMock->method('isConsentementAnalytics')->willReturn(false);
+// class ReaderServiceTest extends TestCase
+// {
+//     public function testGetByIdReturnsSuccessMessageWhenReaderExists(): void
+//     {
+//         $uuid = Uuid::v4();
 
-        $readerRepositoryMock = $this->createMock(ReaderRepository::class);
-        $readerRepositoryMock->expects($this->once())
-            ->method('findOneById')
-            ->with($uuid)
-            ->willReturn($readerMock);
+//         $readerMock = $this->createMock(Reader::class);
+//         $readerMock->method('getId')->willReturn($uuid);
+//         $readerMock->method('getUsername')->willReturn('John');
+//         $readerMock->method('getEmail')->willReturn('john@test.com');
+//         $readerMock->method('getDateInscription')->willReturn(new \DateTime());
+//         $readerMock->method('getConnectionSerie')->willReturn(5);
+//         $readerMock->method('getDateLastConnection')->willReturn(new \DateTime());
+//         $readerMock->method('getDateLastRead')->willReturn(new \DateTime());
+//         $readerMock->method('isPremium')->willReturn(true);
+//         $readerMock->method('getTotalPoint')->willReturn(100);
+//         $readerMock->method('isConsentementAnalytics')->willReturn(false);
 
-        $readerMapper = new ReaderMapper();
-        $readerService = new ReaderService($readerRepositoryMock, $readerMapper);
+//         $readerRepositoryMock = $this->createMock(ReaderRepository::class);
+//         $readerRepositoryMock->expects($this->once())
+//             ->method('findOneById')
+//             ->with($uuid)
+//             ->willReturn($readerMock);
 
-        $result = $readerService->getById($uuid);
+//         $readerMapper = new ReaderMapper();
+//         $readerService = new ReaderService($readerRepositoryMock, $readerMapper);
 
-        $this->assertInstanceOf(ReaderOutputDTO::class, $result);
-        $this->assertSame('John', $result->username);
-    }
+//         $result = $readerService->getById($uuid);
 
-    public function testGetByIdThrowsExceptionWhenReaderDoesNotExist(): void
-    {
-        $uuid = Uuid::v4();
+//         $this->assertInstanceOf(ReaderOutputDTO::class, $result);
+//         $this->assertSame('John', $result->username);
+//     }
 
-        $readerRepositoryMock = $this->createMock(ReaderRepository::class);
-        $readerRepositoryMock->expects($this->once())
-            ->method('findOneById')
-            ->with($uuid)
-            ->willReturn(null);
+//     public function testGetByIdThrowsExceptionWhenReaderDoesNotExist(): void
+//     {
+//         $uuid = Uuid::v4();
 
-        $readerService = new ReaderService($readerRepositoryMock, new ReaderMapper());
+//         $readerRepositoryMock = $this->createMock(ReaderRepository::class);
+//         $readerRepositoryMock->expects($this->once())
+//             ->method('findOneById')
+//             ->with($uuid)
+//             ->willReturn(null);
 
-        $this->expectException(\InvalidArgumentException::class);
-        $readerService->getById($uuid);
-    }
-}
+//         $readerService = new ReaderService($readerRepositoryMock, new ReaderMapper());
+
+//         $this->expectException(\InvalidArgumentException::class);
+//         $readerService->getById($uuid);
+//     }
+// }

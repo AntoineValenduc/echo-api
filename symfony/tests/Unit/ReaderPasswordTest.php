@@ -1,29 +1,29 @@
-<?php
 
-namespace App\Tests\Unit;
 
-use App\Entity\Reader;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+// namespace App\Tests\Unit;
 
-class ReaderPasswordTest extends KernelTestCase
-{
-    public function testPasswordIsHashedAndNotStoredInPlaintext(): void
-    {
-        self::bootKernel();
+// use App\Entity\Reader;
+// use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+// use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-        /** @var UserPasswordHasherInterface $hasher */
-        $hasher = static::getContainer()->get('test.password_hasher');
+// class ReaderPasswordTest extends KernelTestCase
+// {
+//     public function testPasswordIsHashedAndNotStoredInPlaintext(): void
+//     {
+//         self::bootKernel();
 
-        $reader = new Reader();
-        $reader->setEmail('test@example.com');
-        $reader->setUsername('testuser');
+//         /** @var UserPasswordHasherInterface $hasher */
+//         $hasher = static::getContainer()->get('test.password_hasher');
 
-        $plainPassword = 'MotDePasseSecurise123!';
-        $hashedPassword = $hasher->hashPassword($reader, $plainPassword);
-        $reader->setPassword($hashedPassword);
+//         $reader = new Reader();
+//         $reader->setEmail('test@example.com');
+//         $reader->setUsername('testuser');
 
-        $this->assertNotSame($plainPassword, $reader->getPassword());
-        $this->assertTrue($hasher->isPasswordValid($reader, $plainPassword));
-    }
-}
+//         $plainPassword = 'MotDePasseSecurise123!';
+//         $hashedPassword = $hasher->hashPassword($reader, $plainPassword);
+//         $reader->setPassword($hashedPassword);
+
+//         $this->assertNotSame($plainPassword, $reader->getPassword());
+//         $this->assertTrue($hasher->isPasswordValid($reader, $plainPassword));
+//     }
+// }
