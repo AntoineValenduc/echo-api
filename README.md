@@ -14,6 +14,8 @@ L'architecture intègre **deux bases de données PostgreSQL totalement isolées*
 | **Base de Dev** | PostgreSQL `18` | `5432` | `localhost:5432` (Base : `echo_db`) |
 | **Base de Test** | PostgreSQL `18` | `5433` | `localhost:5433` (Base : `echo_db_test`) |
 | **Application** | PHP-FPM + Composer | *Interne* | Géré via Docker CLI |
+| **Keycloak** | Keycloak `24.0` | `8081` | `localhost:8081` |
+| **Dependabot** | Dependabot GitHub | *Interne* | Géré via .gihbub/dependabot.yml et GitHub |
 
 ---
 
