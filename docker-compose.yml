@@ -72,7 +72,7 @@ services:
     keycloak:
         image: quay.io/keycloak/keycloak:24.0
         container_name: keycloak_service
-        command: start-dev
+        command: start-dev --import-realm
         environment:
             KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
             KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
@@ -80,10 +80,11 @@ services:
             KC_DB_URL: jdbc:postgresql://pgsql_keycloak:5432/${POSTGRES_KEYCLOAK_DB}
             KC_DB_USERNAME: ${POSTGRES_KEYCLOAK_USER}
             KC_DB_PASSWORD: ${POSTGRES_KEYCLOAK_PASSWORD}
+            KC_HEALTH_ENABLED: "true"
         ports:
         - "${KEYCLOAK_PORT}:8080"
         depends_on:
-        - postgres_sy
+        - postgres_keycloak
 
 volumes:
     pgsql_dev:
