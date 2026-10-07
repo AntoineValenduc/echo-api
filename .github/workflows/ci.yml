@@ -49,14 +49,6 @@ jobs:
                 done
                 echo "Keycloak is ready !"
 
-            - name: Install dependencies
-              run: |
-                  docker compose exec -T php_composer composer install \
-                  --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
-                  
-            - name: Run tests
-              run: docker compose exec -T php_composer vendor/bin/phpunit
-
               #test debug
             - name: Debug PHP
               run: docker compose exec -T php_composer php -v
@@ -69,6 +61,14 @@ jobs:
 
             - name: Check Symfony Polyfill
               run: docker compose exec -T php_composer composer show symfony/polyfill-php86 --all || true
+
+            - name: Install dependencies
+              run: |
+                  docker compose exec -T php_composer composer install \
+                  --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+                  
+            - name: Run tests
+              run: docker compose exec -T php_composer vendor/bin/phpunit
 
             - name: Stop and clean containers
               if: always()
