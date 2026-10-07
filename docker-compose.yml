@@ -81,10 +81,92 @@ services:
             KC_DB_USERNAME: ${POSTGRES_KEYCLOAK_USER}
             KC_DB_PASSWORD: ${POSTGRES_KEYCLOAK_PASSWORD}
             KC_HEALTH_ENABLED: "true"
+            KC_METRICS_ENABLED: "true"
         ports:
         - "${KEYCLOAK_PORT}:8080"
         depends_on:
         - postgres_keycloak
+
+    prometheus:
+        container_name: prometheus
+        image: prom/prometheus:latest
+        restart: unless-stopped
+        ports:
+            - "9090:9090"
+        volumes:
+            - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+            - prometheus_data:/prometheus
+        profiles:
+            - monitoring
+
+    grafana:
+        container_name: grafana
+        image: grafana/grafana:latest
+        restart: unless-stopped
+        ports:
+        - "3000:3000"
+        environment:
+            GF_SECURITY_ADMIN_USER: admin
+            GF_SECURITY_ADMIN_PASSWORD: admin
+        volumes:
+            - grafana_data:/var/lib/grafana
+        depends_on:
+            - prometheus
+        profiles:
+            - monitoring
+
+
+    # Monitoring for Prometheus/Grafana
+    cadvisor:
+        image: gcr.io/cadvisor/cadvisor:latest
+        container_name: cadvisor
+        restart: unless-stopped
+        ports:
+            - "8082:8080"
+        volumes:
+            - /:/rootfs:ro
+            - /var/run:/var/run:ro
+            - /sys:/sys:ro
+            - /var/lib/docker/:/var/lib/docker:ro
+        profiles:
+            - monitoring
+
+    node_exporter:
+        image: prom/node-exporter:latest
+        container_name: node_exporter
+        ports:
+            - "9100:9100"
+        profiles:
+            - monitoring
+
+    postgres_exporter:
+        image: prometheuscommunity/postgres-exporter
+        container_name: postgres_exporter
+        environment:
+            DATA_SOURCE_NAME: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres_sy:5432/${POSTGRES_DB}?sslmode=disable"
+        ports:
+            - "9187:9187"
+        profiles:
+            - monitoring
+
+    redis_exporter:
+        image: oliver006/redis_exporter
+        container_name: redis_exporter
+        environment:
+            REDIS_ADDR: redis://redis:6379
+        ports:
+            - "9121:9121"
+        profiles:
+            - monitoring
+
+    nginx_exporter:
+        image: nginx/nginx-prometheus-exporter:latest
+        command:
+            - -nginx.scrape-uri=http://server_sf/nginx_status
+        ports:
+            - "9113:9113"
+        profiles:
+            - monitoring
 
 volumes:
     pgsql_dev:
@@ -94,4 +176,8 @@ volumes:
     pgsql_keycloak:
         driver: local
     redis_data:
+        driver: local
+    prometheus_data:
+        driver: local
+    grafana_data:
         driver: local
