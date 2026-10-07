@@ -34,6 +34,10 @@ jobs:
         working-directory: ./symfony
         run: php bin/phpunit --coverage-clover coverage.xml
 
+      - name: Display Sonar Config
+        run: |
+          type sonar-project.properties
+
       - name: SonarCloud Scan
         uses: SonarSource/sonarqube-scan-action@v5
         env:
