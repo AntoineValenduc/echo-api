@@ -16,6 +16,7 @@ L'architecture intègre **deux bases de données PostgreSQL totalement isolées*
 | **Application** | PHP-FPM + Composer | *Interne* | Géré via Docker CLI |
 | **Keycloak** | Keycloak `24.0` | `8081` | `localhost:8081` |
 | **Dependabot** | Dependabot GitHub | *Interne* | Géré via .gihbub/dependabot.yml et GitHub |
+| **Granafa/Prometheus** | Grafana/Prometheus | `3000` | `localhost:3000` |
 
 ---
 
@@ -41,6 +42,10 @@ Puis build normalement (voir section 1). Si tu changes de machine ou d'environne
 *   **Démarrer le projet** (en arrière-plan) :
 ```bash
     docker compose up -d --build
+```
+*  **Démarrer le monitoring en mode dév** :
+```bash
+    docker compose --profile monitoring up -d
 ```
 *   **Arrêter le projet** (et supprimer les conteneurs et volumes, y compris en local) :
 ```bash
