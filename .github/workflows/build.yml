@@ -28,7 +28,7 @@ jobs:
 
       - name: Install Composer Dependencies
         working-directory: ./symfony
-        run: composer install --no-interaction --prefer-dist
+        run: composer install --no-interaction --prefer-dist --no-scripts
 
       - name: Run PHPUnit with Coverage
         working-directory: ./symfony
