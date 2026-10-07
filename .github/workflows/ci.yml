@@ -49,19 +49,6 @@ jobs:
                 done
                 echo "Keycloak is ready !"
 
-              #test debug
-            - name: Debug PHP
-              run: docker compose exec -T php_composer php -v
-
-            - name: Debug Composer
-              run: docker compose exec -T php_composer composer --version
-
-            - name: Composer Diagnose
-              run: docker compose exec -T php_composer composer diagnose
-
-            - name: Check Symfony Polyfill
-              run: docker compose exec -T php_composer composer show symfony/polyfill-php86 --all || true
-
             - name: Install dependencies
               run: |
                   docker compose exec -T php_composer composer install \
