@@ -16,6 +16,7 @@ L'architecture intègre **deux bases de données PostgreSQL totalement isolées*
 | **Application** | PHP-FPM + Composer | *Interne* | Géré via Docker CLI |
 | **Keycloak** | Keycloak `24.0` | `8081` | `localhost:8081` |
 | **Dependabot** | Dependabot GitHub | *Interne* | Géré via .gihbub/dependabot.yml et GitHub |
+| **Granafa/Prometheus** | Grafana/Prometheus | `3000` | `localhost:3000` |
 
 ---
 
