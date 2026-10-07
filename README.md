@@ -20,7 +20,7 @@ L'architecture intègre **deux bases de données PostgreSQL totalement isolées*
 
 ---
 
-## ⚙️ 0. Configuration initiale (à faire une seule fois par machine)
+## 0. Configuration initiale (à faire une seule fois par machine)
 
 Le conteneur `php_composer` tourne avec un utilisateur **non-root**, dont l'UID/GID doit correspondre à celui de ta machine hôte pour éviter des problèmes de permissions sur les fichiers générés (cache, migrations, etc.).
 
