@@ -1,7 +1,7 @@
 services:
     server_sf:
         container_name: server_sf
-        image: nginx:1.31.1-alpine3.23
+        image: nginx:1.31.2-alpine3.23
         working_dir: /www
         volumes:
             - "./symfony:/www/symfony"
