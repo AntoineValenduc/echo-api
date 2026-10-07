@@ -43,6 +43,10 @@ Puis build normalement (voir section 1). Si tu changes de machine ou d'environne
 ```bash
     docker compose up -d --build
 ```
+*  **Démarrer le monitoring en mode dév** :
+```bash
+    docker compose --profile monitoring up -d
+```
 *   **Arrêter le projet** (et supprimer les conteneurs et volumes, y compris en local) :
 ```bash
     docker compose down -v --rmi local
