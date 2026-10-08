@@ -1,0 +1,133 @@
+groups:
+  - name: echo-api
+
+    rules:
+
+      # Symfony / Nginx
+      - alert: SymfonyDown
+        expr: up{job="symfony"} == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Symfony indisponible"
+          description: "L'API Symfony ne répond plus depuis 2 minutes."
+
+      - alert: NginxDown
+        expr: up{job="nginx"} == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Nginx indisponible"
+          description: "Le reverse proxy Nginx est indisponible."
+
+      # Base de données principale
+      - alert: PostgreSQLMainDown
+        expr: up{job="postgres"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "PostgreSQL principal indisponible"
+          description: "La base de données principale ne répond plus."
+
+      # Redis
+      - alert: RedisDown
+        expr: up{job="redis"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Redis indisponible"
+          description: "Redis ne répond plus."
+
+      # Keycloak
+      - alert: KeycloakDown
+        expr: up{job="keycloak"} == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Keycloak indisponible"
+          description: "Le serveur Keycloak ne répond plus."
+
+      # Utilisation mémoire
+      - alert: HighMemoryUsage
+        expr: |
+          (
+            1 -
+            (
+              node_memory_MemAvailable_bytes
+              /
+              node_memory_MemTotal_bytes
+            )
+          ) > 0.80
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Mémoire élevée"
+          description: "Plus de 80% de la RAM utilisée."
+
+      # Utilisation CPU
+      - alert: HighCPUUsage
+        expr: |
+          (
+            100 -
+            (
+              avg by(instance)
+              (
+                rate(node_cpu_seconds_total{mode="idle"}[5m])
+              ) * 100
+            )
+          ) > 80
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "CPU élevé"
+          description: "Plus de 80% de CPU utilisé pendant 10 minutes."
+
+      # Peu d'espace disque
+      - alert: LowDiskSpace
+        expr: |
+          (
+            node_filesystem_avail_bytes
+            /
+            node_filesystem_size_bytes
+          ) < 0.15
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Espace disque faible"
+          description: "Moins de 15% d'espace disque restant."
+
+      # Endpoint health Symfony
+      - alert: HealthEndpointDown
+        expr: probe_success == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Healthcheck KO"
+          description: "/health ou /health/ready ne répond plus."
+
+# global:
+#   smtp_smarthost: smtp.gmail.com:587
+#   smtp_from: monitoring@echo-api.fr
+#   smtp_auth_username: monitoring@echo-api.fr
+#   smtp_auth_password: APP_PASSWORD
+
+# route:
+#   receiver: email
+
+# receivers:
+#   - name: email
+#     email_configs:
+#       - to: toi@example.com
+
+#   - name: discord
+#     webhook_configs:
+#       - url: https://discord.com/api/webhooks/XXXX

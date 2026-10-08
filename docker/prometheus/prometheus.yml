@@ -36,3 +36,12 @@ scrape_configs:
     static_configs:
       - targets:
           - server_sf
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+            - alertmanager:9093
+
+rule_files:
+  - alerts.yml
