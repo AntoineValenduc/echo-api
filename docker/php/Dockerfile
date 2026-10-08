@@ -1,20 +1,20 @@
 FROM php:8.4-fpm-alpine3.24
 
-RUN apk update \
-    && apk add \
+RUN apk update && apk add --no-cache \
     bash \
     zip \
-    libzip-dev \
     unzip \
     git \
     curl \
-    libpq-dev \
-    && docker-php-ext-install pdo_pgsql
+    libzip-dev
 
-RUN apk add --no-cache $PHPIZE_DEPS \
-    && pecl channel-update pecl.php.net \
-    && pecl install redis \
-    && docker-php-ext-enable redis
+ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions \
+    /usr/local/bin/
 
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+RUN chmod +x /usr/local/bin/install-php-extensions
 
+RUN install-php-extensions \
+    pdo_pgsql \
+    redis
+
+COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer
