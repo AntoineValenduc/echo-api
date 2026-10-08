@@ -12,6 +12,7 @@ RUN apk update \
     && docker-php-ext-install pdo_pgsql
 
 RUN apk add --no-cache $PHPIZE_DEPS \
+    && pecl channel-update pecl.php.net \
     && pecl install redis \
     && docker-php-ext-enable redis
 
