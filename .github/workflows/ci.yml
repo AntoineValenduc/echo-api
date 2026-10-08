@@ -60,3 +60,40 @@ jobs:
             - name: Stop and clean containers
               if: always()
               run: docker compose down -v
+
+    security-trivy-fs:
+      runs-on: ubuntu-latest
+
+      steps:
+        - uses: actions/checkout@v4
+
+        - name: Run Trivy filesystem scan
+          uses: aquasecurity/trivy-action@v0.36.0
+          with:
+            scan-type: fs
+            scan-ref: .
+            format: table
+            severity: HIGH,CRITICAL
+
+    security-trivy-image:
+      runs-on: ubuntu-latest
+
+      steps:
+        - uses: actions/checkout@v4
+
+        - run: docker compose build
+
+        - name: Scan image
+          uses: aquasecurity/trivy-action@v0.36.0
+          with:
+            image-ref: php_composer
+            severity: CRITICAL,HIGH
+            exit-code: 1
+
+        - name: Generate SBOM
+          uses: aquasecurity/trivy-action@v0.36.0
+          with:
+            scan-type: fs
+            scan-ref: .
+            format: cyclonedx
+            output: sbom.json
