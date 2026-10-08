@@ -30,3 +30,9 @@ scrape_configs:
     metrics_path: /metrics
     static_configs:
       - targets: ['keycloak_service:8080']
+
+  - job_name: symfony
+    metrics_path: /metrics
+    static_configs:
+      - targets:
+          - server_sf
