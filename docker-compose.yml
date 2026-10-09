@@ -213,7 +213,9 @@ services:
         volumes:
             - ./backups:/backups
             - ./scripts:/scripts
-        entrypoint: ["/scripts/backup-postgres.sh"]
+        entrypoint:
+            - sh
+            - /scripts/backup-postgres.sh
 
 volumes:
     pgsql_dev:
