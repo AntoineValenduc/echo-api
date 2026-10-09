@@ -11,6 +11,7 @@
         "doctrine/doctrine-bundle": "^3.2",
         "doctrine/doctrine-migrations-bundle": "^4.0",
         "doctrine/orm": "^3.6",
+        "nelmio/api-doc-bundle": "*",
         "predis/predis": "^3.6",
         "symfony/cache": "8.1.*",
         "symfony/console": "8.1.*",

@@ -26,6 +26,9 @@ services:
         arguments:
             - '%env(REDIS_URL)%'
 
+    App\Controller\HealthController:
+        arguments:
+            $registry: '@prometheus_metrics_bundle.collector_registry'
 
 when@test:
     services:
