@@ -11,7 +11,7 @@ services:
 
     php_composer:
         container_name: php_composer
-        # image: symfony_php:latest
+        image: symfony_php:latest
         build:
             context: ./docker/php/
             #param par défaut
